@@ -1,0 +1,9 @@
+545765-VHSC
+Re:
+1 vereizeilt leichte BS Ü1
+2 vereizeilt leichte BS 
+3 vereizeilt leichte BS Ü2
+4 vereizeilt leichte BS Ü1
+5 vereizeilt leichte BS Ü4
+
+{'Ü1': 2, '': 1, 'Ü2': 1, 'Ü4': 1}
