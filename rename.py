@@ -1,4 +1,3 @@
-
 import os
 from datetime import timedelta
 from tinytag import TinyTag
@@ -82,3 +81,5 @@ else:
     Das Skript akzeptiert nur 'p' oder 'r'
     'p' für die Umbenennung von mp4-Dateien gemäß der pppv-Konvention und 
     'r' für die Umkehrung der pppv-Namen in ihre ursprünglichen Namen""")
+   
+
