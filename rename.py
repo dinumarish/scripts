@@ -1,12 +1,11 @@
 
 import os
 from datetime import timedelta
-from tkinter import N
 from tinytag import TinyTag
 from math import floor
 import sys
 
-def renameVideos(files):    
+def renameVideos(files,only_docfile=False):    
 
     excesslength = {
                     range(1,15):'',
@@ -31,31 +30,46 @@ def renameVideos(files):
             if category in k:
                 category = v
                 lc[v] = lc.get(v,0) + 1
-        h,m,s=str(duration).split(':')
-        if len(h)==1:
-            h='0'+h
+                break
         
-        os.rename(file,file.split('.')[0]+'.'+h+m+s+'.mp4')
-        fhand.write(file.split('_')[0]+' vereizeilt leichte BS '+category+'\n')
+        fhand.write('#'+file.split('_')[0]+' vereizeilt leichte BS '+category+'\n')
+
+        if not only_docfile:
+            h,m,s=str(duration).split(':')
+            if len(h)==1:
+                h='0'+h
+            os.rename(file,file.split('.')[0]+'.'+h+m+s+'.mp4')
 
         #os.system(f"copy {file} {file.split('.')[0]+'.'+h+m+s+'.mp4'}")
         #print(file.split('.')[0]+'.'+h+m+s+'.mp4')
     
-    fhand.write(str(lc))
     fhand.close()
-    print('Dateinamenänderungen, abgeschlossen!!')
-    
+
+    with open('doc.txt','r') as fhand:
+        content = fhand.read()
+
+    with open('doc.txt', 'w') as fhand:
+        fhand.seek(0,0)
+        for item in sorted(lc.items())[1:]:
+            fhand.write(str(item).replace('(','').replace(')','').replace(',',':')+"\n")
+        fhand.write(content)
+
+    if not only_docfile:
+        print('Dateinamenänderungen, abgeschlossen!!')
+    else:
+        print(f"doc.txt-Datei im {os.getcwd()} mit den Videodauerangaben gespeichert")
 
 def revertNames(files):
     for file in files:
         os.rename(file,file.split('.')[0]+'.mp4')
     print(f'Umkehrung von Dateinamen erfolgreich für Verzeichnis in')
 
+
 arg = sys.argv
 files = list(filter(lambda x: x.endswith('mp4'),os.listdir()))
 
 if len(arg)==1:
-    renameVideos(files)
+    renameVideos(files,only_docfile=True)
 
 elif len(arg)==2 and arg[1].lower()=='p':
     renameVideos(files)
@@ -68,5 +82,3 @@ else:
     Das Skript akzeptiert nur 'p' oder 'r'
     'p' für die Umbenennung von mp4-Dateien gemäß der pppv-Konvention und 
     'r' für die Umkehrung der pppv-Namen in ihre ursprünglichen Namen""")
-   
-
