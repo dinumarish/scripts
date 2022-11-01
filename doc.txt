@@ -1,10 +1,7 @@
-'Ü1': 2
-'Ü2': 1
-'Ü4': 1
-545765-VHSC
+scripts
 Re:
-#1 vereizeilt leichte BS Ü1
+#1 vereizeilt leichte BS 
 #2 vereizeilt leichte BS 
-#3 vereizeilt leichte BS Ü2
-#4 vereizeilt leichte BS Ü1
-#5 vereizeilt leichte BS Ü4
+#3 vereizeilt leichte BS 
+#4 vereizeilt leichte BS 
+#15 vereizeilt leichte BS 
