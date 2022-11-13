@@ -23,7 +23,7 @@ def renameVideos(files,only_docfile=False):
         video = TinyTag.get(file)
         duration = floor(video.duration)
         duration = timedelta(seconds=duration)
-        category = duration.seconds%60
+        category = duration.seconds//60
         
         for k,v in excesslength.items():
             if category in k:
