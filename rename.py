@@ -72,7 +72,11 @@ def revertNames(files):
 
 arg = sys.argv
 files = list(filter(lambda x: x.endswith('mp4'),os.listdir()))
-files.sort(key=lambda x:int(x.split('_')[0]))
+try:
+    files.sort(key=lambda x:int(x.split('_')[0]))
+except:
+    #do nothing 
+    None
 
 if len(arg)==1:
     renameVideos(files,only_docfile=True)

@@ -2,18 +2,15 @@ import os
 from datetime import timedelta
 from tinytag import TinyTag
 from math import floor
-from tkinter import *
-from tkinter import filedialog
-
+from tkinter import Label, Button, Entry, Tk,filedialog,END
 
 root = Tk()
 root.geometry("420x180")
 root.title("Digi-Post-Prozessor")
-root.iconbitmap('mfix.ico')
+root.iconbitmap(os.path.join(os.getcwd(),"mfix.ico"))
 
 root.rowconfigure([0,1,2],weight=1)
 root.columnconfigure([0,1,2],weight=1)
-
 
 def renameVideos(path,only_docfile=False):    
 
@@ -30,7 +27,10 @@ def renameVideos(path,only_docfile=False):
         return
         
     files = list(filter(lambda x: x.endswith('mp4'),os.listdir()))
-    files.sort(key=lambda x:int(x.split('_')[0]))
+    try:
+        files.sort(key=lambda x:int(x.split('_')[0]))
+    except:
+        None
 
     excesslength = {
                     range(0,94):'',
@@ -106,7 +106,10 @@ def revertNames(path):
         status.grid(row=2,column=0, columnspan=3)
         return 
     files = list(filter(lambda x: x.endswith('mp4'),os.listdir()))
-    files.sort(key=lambda x:int(x.split('_')[0]))
+    try:
+        files.sort(key=lambda x:int(x.split('_')[0]))
+    except:
+        None
     for file in files:
         os.rename(file,file.split('.')[0]+'.mp4')
     

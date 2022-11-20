@@ -2,32 +2,35 @@ import os
 from datetime import timedelta
 from tinytag import TinyTag
 from math import floor
-from tkinter import *
-
+from tkinter import Label, Button, Entry, Tk,filedialog,END
 
 root = Tk()
+root.geometry("420x180")
 root.title("Digi-Post-Prozessor")
-root.geometry("720x280")
-root.iconbitmap('mfix.ico')
-result =Label(root,font=10)
-result.grid(row=2, column=0,columnspan=3,sticky='nsew')
+root.iconbitmap(os.path.join(os.getcwd(),"mfix.ico"))
+
+root.rowconfigure([0,1,2],weight=1)
+root.columnconfigure([0,1,2],weight=1)
 
 def renameVideos(path,only_docfile=False):    
 
-    global result  
-    result.grid_forget()
+    global status  
+    status.grid_forget()
     
     current = path.get()
     try:
         os.chdir(current)
         
     except:
-        result['text'] ="Bitte geben Sie einen gültigen Pfad ein"
-        result.grid(row=2, column=0, columnspan=3)
+        status['text'] ="Bitte geben Sie einen gültigen Pfad ein"
+        status.grid(row=2, column=0, columnspan=3)
         return
         
     files = list(filter(lambda x: x.endswith('mp4'),os.listdir()))
-    files.sort(key=lambda x:int(x.split('_')[0]))
+    try:
+        files.sort(key=lambda x:int(x.split('_')[0]))
+    except:
+        None
 
     excesslength = {
                     range(0,94):'',
@@ -84,45 +87,63 @@ def renameVideos(path,only_docfile=False):
 
     if not only_docfile:
         
-        result['text']="Dateinamenänderungen, abgeschlossen!!"
-        result.grid(row=2,column=0,columnspan=3)
+        status['text']="Dateinamenänderungen, abgeschlossen!!"
+        status.grid(row=2,column=0,columnspan=3)
     else:
         
-        result['text']=f"doc.txt-Datei im {os.getcwd()} \n mit den Videodauerangaben gespeichert"
-        result.grid(row=2,column=0,columnspan=3)
+        status['text']=f"doc.txt-Datei im {os.getcwd()} \n mit den Videodauerangaben gespeichert"
+        status.grid(row=2,column=0,columnspan=3)
     
 
 def revertNames(path):
-    global result
-    result.grid_forget()   
+    global status
+    status.grid_forget()   
     current = path.get()
     try:
         os.chdir(current)
     except:
-        result['text'] ="Bitte geben Sie einen gültigen Pfad ein"
-        result.grid(row=2,column=0, columnspan=3)
+        status['text'] ="Bitte geben Sie einen gültigen Pfad ein"
+        status.grid(row=2,column=0, columnspan=3)
         return 
     files = list(filter(lambda x: x.endswith('mp4'),os.listdir()))
-    files.sort(key=lambda x:int(x.split('_')[0]))
+    try:
+        files.sort(key=lambda x:int(x.split('_')[0]))
+    except:
+        None
     for file in files:
         os.rename(file,file.split('.')[0]+'.mp4')
     
-    result['text']="Umkehrung von Dateinamen erfolgreich für Verzeichnis"
-    result.grid(row=2,column=0,columnspan=3)
+    status['text']="Umkehrung von Dateinamen erfolgreich für Verzeichnis"
+    status.grid(row=2,column=0,columnspan=3)
     return
 
+def folder_select():
+    root.filename = filedialog.askdirectory(title="Ordner auswählen")
+    
+    global path
+    path.delete(0,END)
+    path.insert(0,root.filename)
 
 
 #create an entry box for getting directory path
 path = Entry(root, width=50, borderwidth=5)
-path.grid(row=0, column=0, columnspan=3,padx=10, pady=10,sticky='nsew')
+path.grid(row=0, column=0, columnspan=2,padx=10, pady=10,sticky='ew')
 path.insert(0, 'Ordnerpfad eingeben')
 
-button_doc = Button(root, width=10,text="Doc", command=lambda: renameVideos(path, only_docfile=True)).grid(row=1,column=0, padx=15, pady=15,sticky='nsew')
-button_pppv = Button(root, width=10,text="PPPV", command=lambda: renameVideos(path)).grid(row=1,column=1, padx=15, pady=15,sticky='nsew')
-button_revert = Button(root, width=10,text="Umkehrung", command=lambda: revertNames(path)).grid(row=1,column=2, padx=15, pady=15,sticky='nsew')
+folder_button = Button(root, text="browse", command=folder_select)
+folder_button.grid(row=0, column=2, padx=5,pady=5,columnspan=2,sticky='ew')
 
-root.rowconfigure([0,1],weight=1)
-root.columnconfigure([0,1,2],weight=1)
+doc_button = Button(root, width=10,text="Doc", command=lambda: renameVideos(path, only_docfile=True))
+doc_button.grid(row=1,column=0, padx=15, pady=15,sticky='ew')
+
+pppv_button = Button(root, width=10,text="PPPV", command=lambda: renameVideos(path))
+pppv_button.grid(row=1,column=1, padx=15, pady=15,sticky='ew')
+
+revert_button = Button(root, width=10,text="Umkehrung", command=lambda: revertNames(path))
+revert_button.grid(row=1,column=2, padx=15, pady=15,sticky='ew')
+
+status =Label(root)
+status.grid(row=2, column=0,columnspan=3,sticky='nsew')
+
 root.mainloop()
 

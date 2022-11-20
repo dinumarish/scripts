@@ -1,28 +1,30 @@
-import os
-from tkinter import *
-from tkinter import filedialog
+from os import chdir,getcwd
+from subprocess import run
+from os.path import dirname, join
+from tkinter import Label, Button, Entry, Tk, filedialog,END
 root = Tk()
 root.geometry("720x320")
-root.title('mp4-Trimmer')
-root.iconbitmap('mfix.ico')
+root.title('Video-Trimmer')
+root.iconbitmap(join(getcwd(),'mfix.ico'))
+
 
 root.rowconfigure([0,1,2],weight=1)
 root.columnconfigure([0,1,2,3,4,5],weight=1)
 
 def file_select():
-    root.filename = filedialog.askopenfilename(title="Datei auswählen")
+    root.filename = filedialog.askopenfilename(title="Datei auswählen", filetypes=(("MP4 mp4","All .*")))
     path.delete(0,END)
     path.insert(0,root.filename)
 
 def validate_entry():
     file = path.get()
     try:
-        os.chdir(os.path.dirname(file))
+        chdir(dirname(file))
         hh = int(float(h.get()))
         mm = int(float(m.get()))
         ss = int(float(s.get()))
-        if ss <0 or ss>59 or mm<0 or mm>59 or hh<0:
-            return False
+        if ss <0 or ss>59 or mm<0 or mm>59 or hh<0 or ss==mm==hh==0:
+            return False      
         else:
             return hh,mm,ss
     except:
@@ -33,8 +35,8 @@ def trim_video():
     status.grid_forget()
     try:
         hh,mm,ss = validate_entry()
-        cmd = f"echo Y|ffmpeg -i {file} -ss 00:00:00 -t {hh}:{mm}:{ss} -c:v copy -c:a copy {file.split('.')[0]}_edited.mp4"
-        os.system(cmd)      
+        cmd = f"echo Y|ffmpeg -i {file} -ss 00:00:00 -t {hh}:{mm}:{ss} -c:v copy -c:a copy {str(file.split('.')[0])}_edited.mp4"
+        run(cmd,shell=True)      
         status['text'] = "Erfolgreich abgeschlossen!"
         status.grid(row=3,column=0)
         
@@ -44,11 +46,11 @@ def trim_video():
     return
 
 path = Entry(root, width=20,borderwidth=5,border=2)
-path.grid(row=0,column=0,columnspan=6,rowspan=1,padx=10,pady=10,sticky='ew')
+path.grid(row=0,column=0,columnspan=4,rowspan=1,padx=10,pady=10,sticky='ew')
 path.insert(0, 'Wählen Sie die mp4-Datei')
 
 file_button = Button(root, text="browse", command=file_select)
-file_button.grid(row=0, column=6, padx=5,pady=5,columnspan=2,sticky='ew')
+file_button.grid(row=0, column=4, padx=5,pady=5,columnspan=2,sticky='ew')
 
 h_label =Label(root,text="HH")
 h_label.grid(row=1,column=0,padx=2,pady=2,sticky='ew')
